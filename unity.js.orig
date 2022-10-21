@@ -39,7 +39,7 @@ window.addEventListener("load", (event) => {
         document.getElementById("loading").style.display = "none";
 
         document.getElementById("accept").onclick = function () {
-          Unity.accepted();
+          Unity.call('accepted');
         };
       }
     }
